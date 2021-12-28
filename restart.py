@@ -63,21 +63,52 @@ restart_apaches_332 = os.system("ssh 2a00:0da9:0004:202e:60fd:0000:2284:0332 'cd
 # graceful restart all proxy apaches for dcplnx22865287
 restart_apaches_287 = os.system("ssh 2a00:0da9:0004:202e:60fd:0000:2286:5287 'cd /home/ecare/scripts/; ./apaches_proxy.sh graceful'")
 
+# start blue instances separately 
+start_blue_instances = ["ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 '",
+"ssh ecare@qdef2d 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2d 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2f 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2f 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2b 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2b 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2h 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2h 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2k 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2k 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'"]
+
+# start green instances separately
+start_green_instances = ["ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2d 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2d 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2f 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2f 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2b 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2b 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2h 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2h 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2k 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
+"ssh ecare@qdef2k 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'"]
+
 # full restart method
 def full():
     print("full")
 
 # orig method
 def orig():
-    print("orig")
+    os.system("rm -rf pids.txt")
+    os.system("ssh ecare@qde5nj ps -ef | grep -i wildfly20_prod_11001 | grep -v grep | grep keystore | gawk '{print $2}' >> pids.txt")
 
 # blue method
 def blue():
-    print("blue")
+    for cmnd in start_blue_instances:
+        os.system(cmnd)
 
 # green method
 def green():
-    print("green")
+    for cmnd in start_green_instances:
+        os.system(cmnd)
 
 # orig no restart method
 def origNR():
