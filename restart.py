@@ -104,7 +104,7 @@ stop_instances = ["ssh ecare@qde5nj kill -9 ",
 
 # start blue instances separately 
 start_blue_instances = ["ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11003/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11003/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
-"ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 '",
+"ssh ecare@qde5nj 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11004/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11004/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
 "ssh ecare@qdef2d 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11001/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11001/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
 "ssh ecare@qdef2d 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
 "ssh ecare@qdef2f 'export RUN_CONF=/home/ecare/apps/wildfly20_prod_11002/configuration/standalone.conf && cd /home/ecare/apps/wildfly/wildfly-20.0.1.Final/bin/ && nohup ./standalone.sh -Djboss.server.base.dir=/home/ecare/apps/wildfly20_prod_11002/ -b=0.0.0.0 -bmanagement=0.0.0.0 >/dev/null 2>&1 &'",
@@ -150,7 +150,24 @@ def full():
 
 # orig method
 def orig():
-    print("orig")
+    origNR()
+    
+    for cmnd in store_blue_pids:
+        os.system(cmnd)
+
+    stop_instances_proc()
+
+    os.system(delete_pids_file)
+    for cmnd in store_green_pids:
+        os.system(cmnd)
+    
+    stop_instances_proc()
+    time.sleep(5) # delay script for 5 seconds
+
+    for cmnd in start_blue_instances:
+        os.system(cmnd)
+    for cmnd in start_green_instances:
+        os.system(cmnd)
 
 # blue method
 def blue():
@@ -185,6 +202,7 @@ def origNR():
     for cmnd in copy_orig_conf_332:
         os.system(cmnd) 
     os.system(restart_apaches_332)
+
     for cmnd in copy_orig_conf_287:
         os.system(cmnd) 
     os.system(restart_apaches_287)
@@ -194,6 +212,7 @@ def blueNR():
     for cmnd in copy_blue_conf_332:
         os.system(cmnd) 
     os.system(restart_apaches_332)
+
     for cmnd in copy_blue_conf_287:
         os.system(cmnd) 
     os.system(restart_apaches_287)
@@ -203,6 +222,7 @@ def greenNR():
     for cmnd in copy_green_conf_332:
         os.system(cmnd) 
     os.system(restart_apaches_332)
+
     for cmnd in copy_green_conf_287:
         os.system(cmnd) 
     os.system(restart_apaches_287)
