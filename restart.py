@@ -192,11 +192,42 @@ check_green_failed = ["ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_prod_1
 "ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c failed >> state_failed.txt",
 "ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c failed >> state_failed.txt"]
 
+# check if blue instances are still deploying
+check_blue_isdeploying = ["ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_prod_11003/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_prod_11004/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2d ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2d ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2f ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2f ls -la /home/ecare/apps/wildfly20_prod_11003/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2b ls -la /home/ecare/apps/wildfly20_prod_11003/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2b ls -la /home/ecare/apps/wildfly20_prod_11004/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2h ls -la /home/ecare/apps/wildfly20_prod_11003/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2h ls -la /home/ecare/apps/wildfly20_prod_11004/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11003/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11004/deployments | grep -c isdeploying >> state_isdeploying.txt"]
+
+# check if green instances are still deploying
+check_green_isdeploying = ["ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2d ls -la /home/ecare/apps/wildfly20_prod_11003/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2d ls -la /home/ecare/apps/wildfly20_prod_11004/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2f ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2f ls -la /home/ecare/apps/wildfly20_prod_11004/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2b ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2b ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2h ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2h ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
+"ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt"]
+
 # delete text file with deployed instances
 delete_deployed_file = "rm -rf state_deployed.txt"
 
 # delete text file with failed instances
 delete_failed_file = "rm -rf state_failed.txt"
+
+# delete text file with deploying instances
+delete_isdeploying_file = "rm -rf state_isdeploying.txt"
 
 # open text file, read PIDs stored in file, execute kill commands and close text file - stop instances proccess
 def stop_instances_proc():
@@ -273,6 +304,7 @@ def blue():
         contentFailed = file.readlines() # read content of failed.txt file
         file.close()
         
+        # check how many instances are failed, restart these instances
         line_num = -1
         for failed in contentFailed:
             line_num += 1
@@ -290,10 +322,36 @@ def blue():
                 for cmnd in store_blue_pids:
                     os.system(cmnd)
 
+        # check how many instances are deployed
         for instance in contentDeployed:
             if instance == 1:			
                 counter_deployed =+ 1
         print("%d instances are successfully deployed." %(counter_deployed))
+
+        # if instance is stuck in .isdeploying after 10 minutes, restart this instance
+        line = -1
+        if timer == 47:
+            os.system(delete_isdeploying_file)
+            for cmnd in check_blue_isdeploying:
+                os.system(cmnd)
+            file = open("state_isdeploying.txt", "r")
+            contentIsDeploying = file.readlines() # read content of failed.txt file
+            file.close()
+            for deploying in contentIsDeploying:
+                line += 1
+                if deploying == 1:
+                    print("Instance deployment is stuck on .isdeploying. Restarting instance.")
+                    file = open("pids.txt", "r")
+                    contentPid = file.readlines() # read content of pids.txt file
+                    file.close()
+                    os.system(stop_instances[line]  + contentPid[line])
+                    time.sleep(5) # delay script for 5 seconds
+                    os.system(start_blue_instances[line])
+                    print("Stucked instance is starting again.")
+                    timer = 0
+                    os.system(delete_pids_file)
+                    for cmnd in store_blue_pids:
+                        os.system(cmnd)	      	
 
     print("Blue instances are restarted successfully.")
 
@@ -358,6 +416,31 @@ def green():
             if instance == 1:			
                 counter_deployed =+ 1
         print("%d instances are successfully deployed." %(counter_deployed))
+
+        # if instance is stuck in .isdeploying after 10 minutes, restart this instance
+        line = -1
+        if timer == 47:
+            os.system(delete_isdeploying_file)
+            for cmnd in check_green_isdeploying:
+                os.system(cmnd)
+            file = open("state_isdeploying.txt", "r")
+            contentIsDeploying = file.readlines() # read content of failed.txt file
+            file.close()
+            for deploying in contentIsDeploying:
+                line += 1
+                if deploying == 1:
+                    print("Instance deployment is stuck on .isdeploying. Restarting instance.")
+                    file = open("pids.txt", "r")
+                    contentPid = file.readlines() # read content of pids.txt file
+                    file.close()
+                    os.system(stop_instances[line]  + contentPid[line])
+                    time.sleep(5) # delay script for 5 seconds
+                    os.system(start_green_instances[line])
+                    print("Stucked instance is starting again.")
+                    timer = 0
+                    os.system(delete_pids_file)
+                    for cmnd in store_green_pids:
+                        os.system(cmnd)
     
     print("Green instances are restarted successfully.")
 
