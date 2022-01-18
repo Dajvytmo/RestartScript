@@ -395,6 +395,7 @@ def green():
         contentFailed = file.readlines() # read content of failed.txt file
         file.close()
         
+        # check how many instances are failed, restart these instances
         line_num = -1
         for failed in contentFailed:
             line_num += 1
@@ -412,6 +413,7 @@ def green():
                 for cmnd in store_green_pids:
                     os.system(cmnd)
 
+        # check how many instances are deployed
         for instance in contentDeployed:
             if instance == 1:			
                 counter_deployed =+ 1
