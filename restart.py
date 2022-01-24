@@ -64,7 +64,7 @@ restart_apaches_332 = "ssh 2a00:0da9:0004:202e:60fd:0000:2284:0332 'cd /home/eca
 restart_apaches_287 = "ssh 2a00:0da9:0004:202e:60fd:0000:2286:5287 'cd /home/ecare/scripts/; ./apaches_proxy.sh graceful'"
 
 # delete text file with PIDs
-delete_pids_file = "rm -rf pids.txt"
+delete_pids_file = "rm pids.txt"
 
 # find PID of all blue instances and store it to text file
 store_blue_pids = ["ssh ecare@qde5nj ps -ef | grep -i wildfly20_prod_11003 | grep -v grep | grep keystore | gawk '{print $2}' >> pids.txt",
@@ -221,13 +221,13 @@ check_green_isdeploying = ["ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_p
 "ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt"]
 
 # delete text file with deployed instances
-delete_deployed_file = "rm -rf state_deployed.txt"
+delete_deployed_file = "rm state_deployed.txt"
 
 # delete text file with failed instances
-delete_failed_file = "rm -rf state_failed.txt"
+delete_failed_file = "rm state_failed.txt"
 
 # delete text file with deploying instances
-delete_isdeploying_file = "rm -rf state_isdeploying.txt"
+delete_isdeploying_file = "rm state_isdeploying.txt"
 
 # open text file, read PIDs stored in file, execute kill commands and close text file - stop instances proccess
 def stop_instances_proc():
@@ -239,7 +239,7 @@ def stop_instances_proc():
 
     for cmnd in stop_instances:
         os.system(cmnd + content[line_num])
-        line_num += 1\
+        line_num += 1
 
     print("Instances are stopped successfully.")
 
