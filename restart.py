@@ -470,7 +470,37 @@ def greenNR():
 
     print("Green configuration files are on apaches.")
 
-# full restart
+# Main method
+def main():
+    print("Hello! Please, choose one of options: ")
+    print("1 - Full app restart")
+    print("2 - Orig apache profile + app restart")
+    print("3 - Blue apache profile + app restart")
+    print("4 - Green apache profile + app restart")
+    print("5 - Blue apache profile without app restart")
+    print("6 - Green apache profile without app restart")
+    restart_option = input("Your option: ")
+
+    if (restart_option == "1"):
+        full()
+    elif (restart_option == "2"):
+        orig()
+    elif (restart_option == "3"):
+        blue()
+    elif (restart_option == "4"):
+        green()
+    elif (restart_option == "5"):
+        blueNR()
+    elif (restart_option == "6"):
+        greenNR()
+    else:
+        print("Wrong input, please try again.")
+        main()
+
+# Start of the script
+main()
+
+""" # full restart
 if arg_length == 1:
     full()
 
@@ -508,4 +538,4 @@ elif arg_length == 3:
         print("Wrong argument")
 
 else:
-    print("Too many arguments")
+    print("Too many arguments") """
