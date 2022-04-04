@@ -1,7 +1,4 @@
-import os, sys, time
- 
-# length of arguments
-arg_length = len(sys.argv)
+import os, time
 
 # paste original configuration file for dcplnx22840332
 copy_orig_conf_332 = ["ssh 2a00:0da9:0004:202e:60fd:0000:2284:0332 'cd /home/ecare/apps/apache-prod-batch-intern-proxy/conf/; cp http-instance.conf_orig http-instance.conf'", 
