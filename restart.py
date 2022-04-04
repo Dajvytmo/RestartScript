@@ -217,6 +217,7 @@ check_green_isdeploying = ["ssh ecare@qde5nj ls -la /home/ecare/apps/wildfly20_p
 "ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11001/deployments | grep -c isdeploying >> state_isdeploying.txt",
 "ssh ecare@qdef2k ls -la /home/ecare/apps/wildfly20_prod_11002/deployments | grep -c isdeploying >> state_isdeploying.txt"]
 
+
 # delete text file with deployed instances
 delete_deployed_file = "rm state_deployed.txt"
 
@@ -225,6 +226,37 @@ delete_failed_file = "rm state_failed.txt"
 
 # delete text file with deploying instances
 delete_isdeploying_file = "rm state_isdeploying.txt"
+
+# name of blue instances
+blue_instances = ["QDE5NJ - 11003 ",
+"QDE5NJ - 11004 ",
+"QDEF2D - 11001 ",
+"QDEF2D - 11002 ",
+"QDEF2F - 11002 ",
+"QDEF2F - 11003 ",
+"QDEF2B - 11003 ",
+"QDEF2B - 11004 ",
+"QDEF2H - 11003 ",
+"QDEF2H - 11004 ",
+"QDEF2K - 11003 ",
+"QDEF2K - 11004 "]
+
+# name of green instances
+green_instances = ["QDE5NJ - 11001 ",
+"QDE5NJ - 11002 ",
+"QDEF2D - 11003 ",
+"QDEF2D - 11004 ",
+"QDEF2F - 11001 ",
+"QDEF2F - 11004 ",
+"QDEF2B - 11001 ",
+"QDEF2B - 11002 ",
+"QDEF2H - 11001 ",
+"QDEF2H - 11002 ",
+"QDEF2K - 11001 ",
+"QDEF2K - 11002 "]
+
+# state of deployed instance 
+deployed_message = ["deploying", "deployed"]
 
 # open text file, read PIDs stored in file, execute kill commands and close text file - stop instances proccess
 def stop_instances_proc():
@@ -259,7 +291,7 @@ def orig():
         os.system(cmnd) 
     os.system(restart_apaches_287)
 
-    print("Original configuration files are on apaches.")
+    print("Original configuration files are on. Apaches were restarted.")
 
 # blue method
 def blue():
@@ -302,31 +334,34 @@ def blue():
         file.close()
         
         # check how many instances are failed, restart these instances
-        line_num = -1
+        line_failed_counter = -1
         for failed in contentFailed:
-            line_num += 1
+            line_failed_counter += 1
             if failed == 1:
-                print("Instance deployment failed. Restarting instance.")
+                print("\n %s is failed. Restarting instance." %(blue_instances[line_failed_counter]))
                 file = open("pids.txt", "r")
                 contentPid = file.readlines() # read content of pids.txt file
                 file.close()
-                os.system(stop_instances[line_num]  + contentPid[line_num])
+                os.system(stop_instances[line_failed_counter]  + contentPid[line_failed_counter])
                 time.sleep(5) # delay script for 5 seconds
-                os.system(start_blue_instances[line_num])
-                print("Failed instance is starting again.")
+                os.system(start_blue_instances[line_failed_counter])
+                print("Failed instance/s are starting again. \n")
                 timer = 0
                 os.system(delete_pids_file)
                 for cmnd in store_blue_pids:
                     os.system(cmnd)
 
         # check how many instances are deployed
-        for instance in contentDeployed:
-            if instance == 1:			
+        line_deployed_counter = -1
+        for deployed in contentDeployed:
+            line_deployed_counter += 1
+            print("%s is %s." %(blue_instances[line_deployed_counter], deployed_message[deployed]))
+            if deployed == 1:			
                 counter_deployed =+ 1
-        print("%d instances are successfully deployed." %(counter_deployed))
+        #print("%d instances are successfully deployed." %(counter_deployed))
 
         # if instance is stuck in .isdeploying after 10 minutes, restart this instance
-        line = -1
+        line_deploying_counter = -1
         if timer == 47:
             os.system(delete_isdeploying_file)
             for cmnd in check_blue_isdeploying:
@@ -335,16 +370,16 @@ def blue():
             contentIsDeploying = file.readlines() # read content of failed.txt file
             file.close()
             for deploying in contentIsDeploying:
-                line += 1
+                line_deploying_counter += 1
                 if deploying == 1:
-                    print("Instance deployment is stuck on .isdeploying. Restarting instance.")
+                    print("\n %s is stuck on .isdeploying. Restarting instance." %(blue_instances[line_deploying_counter]))
                     file = open("pids.txt", "r")
                     contentPid = file.readlines() # read content of pids.txt file
                     file.close()
-                    os.system(stop_instances[line]  + contentPid[line])
+                    os.system(stop_instances[line_deploying_counter]  + contentPid[line_deploying_counter])
                     time.sleep(5) # delay script for 5 seconds
-                    os.system(start_blue_instances[line])
-                    print("Stucked instance is starting again.")
+                    os.system(start_blue_instances[line_deploying_counter])
+                    print("Stucked instance is starting again. \n")
                     timer = 0
                     os.system(delete_pids_file)
                     for cmnd in store_blue_pids:
@@ -393,31 +428,34 @@ def green():
         file.close()
         
         # check how many instances are failed, restart these instances
-        line_num = -1
+        line_failed_counter = -1
         for failed in contentFailed:
-            line_num += 1
+            line_failed_counter += 1
             if failed == 1:
-                print("Instance deployment failed. Restarting instance.")
+                print("\n %s is failed. Restarting instance." %(green_instances[line_failed_counter]))
                 file = open("pids.txt", "r")
                 contentPid = file.readlines() # read content of pids.txt file
                 file.close()
-                os.system(stop_instances[line_num]  + contentPid[line_num])
+                os.system(stop_instances[line_failed_counter]  + contentPid[line_failed_counter])
                 time.sleep(5) # delay script for 5 seconds
-                os.system(start_green_instances[line_num])
-                print("Failed instance is starting again.")
+                os.system(start_green_instances[line_failed_counter])
+                print("Failed instance is starting again. \n")
                 timer = 0
                 os.system(delete_pids_file)
                 for cmnd in store_green_pids:
                     os.system(cmnd)
 
         # check how many instances are deployed
-        for instance in contentDeployed:
-            if instance == 1:			
+        line_deployed_counter = -1
+        for deployed in contentDeployed:
+            line_deployed_counter += 1
+            print("%s is %s." %(green_instances[line_deployed_counter], deployed_message[deployed]))
+            if deployed == 1:			
                 counter_deployed =+ 1
-        print("%d instances are successfully deployed." %(counter_deployed))
+        #print("%d instances are successfully deployed." %(counter_deployed))
 
         # if instance is stuck in .isdeploying after 10 minutes, restart this instance
-        line = -1
+        line_deploying_counter = -1
         if timer == 47:
             os.system(delete_isdeploying_file)
             for cmnd in check_green_isdeploying:
@@ -426,16 +464,16 @@ def green():
             contentIsDeploying = file.readlines() # read content of failed.txt file
             file.close()
             for deploying in contentIsDeploying:
-                line += 1
+                line_deploying_counter += 1
                 if deploying == 1:
-                    print("Instance deployment is stuck on .isdeploying. Restarting instance.")
+                    print("\n %s is stuck on .isdeploying. Restarting instance." %(green_instances[line_deploying_counter]))
                     file = open("pids.txt", "r")
                     contentPid = file.readlines() # read content of pids.txt file
                     file.close()
-                    os.system(stop_instances[line]  + contentPid[line])
+                    os.system(stop_instances[line_deploying_counter]  + contentPid[line_deploying_counter])
                     time.sleep(5) # delay script for 5 seconds
-                    os.system(start_green_instances[line])
-                    print("Stucked instance is starting again.")
+                    os.system(start_green_instances[line_deploying_counter])
+                    print("Stucked instance is starting again. \n")
                     timer = 0
                     os.system(delete_pids_file)
                     for cmnd in store_green_pids:
@@ -453,7 +491,7 @@ def blueNR():
         os.system(cmnd) 
     os.system(restart_apaches_287)
 
-    print("Blue configuration files are on apaches.")
+    print("Blue configuration files are on. Apaches were restarted.")
 
 # green no restart method
 def greenNR():
@@ -465,13 +503,13 @@ def greenNR():
         os.system(cmnd) 
     os.system(restart_apaches_287)
 
-    print("Green configuration files are on apaches.")
+    print("Green configuration files are on. Apaches were restarted.")
 
 # Main method
 def main():
     print("Hello! Please, choose one of options: ")
     print("1 - Full app restart")
-    print("2 - Orig apache profile + app restart")
+    print("2 - Original apache profile + app restart")
     print("3 - Blue apache profile + app restart")
     print("4 - Green apache profile + app restart")
     print("5 - Blue apache profile without app restart")
