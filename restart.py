@@ -250,7 +250,7 @@ def full():
     blue()
     green()
     orig()
-    print("Full restart is successfully ended.")
+    print("Full application restart is successfully ended.")
 
 # orig method
 def orig():
@@ -494,48 +494,8 @@ def main():
     elif (restart_option == "6"):
         greenNR()
     else:
-        print("Wrong input, please try again.")
+        print("Wrong input, please try again. \n")
         main()
 
 # Start of the script
 main()
-
-""" # full restart
-if arg_length == 1:
-    full()
-
-# orig, blue and green
-elif arg_length == 2 :
-
-    if sys.argv[1] == "orig":
-        orig()
-
-    elif sys.argv[1] == "blue":
-        blue()
-
-    elif sys.argv[1] == "green":
-        green()
-
-    else:
-        print("Wrong argument")
-
-# orig, blue and green with no restart
-elif arg_length == 3:
-
-    if sys.argv[1] == "blue":
-        if sys.argv[2] == "norestart":
-            blueNR()
-        else:
-            print("Wrong argument")
-
-    elif sys.argv[1] == "green":
-        if sys.argv[2] == "norestart":
-            greenNR()
-        else:
-            print("Wrong argument")
-
-    else:
-        print("Wrong argument")
-
-else:
-    print("Too many arguments") """
