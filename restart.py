@@ -252,18 +252,25 @@ def restart_instance_without_check(instance_color, line_number):
     stop_one_instance(line_number)
     if (instance_color == "blue"):
         print("\n %s is successfully stopped. Restarting instance." %(blue_instances[line_number]))
+        vypis = "\n %s is successfully stopped. Restarting instance." %(blue_instances[line_number])
+        log(vypis)
     else:
         print("\n %s is successfully stopped. Restarting instance." %(green_instances[line_number]))
-
+        vypis = "\n %s is successfully stopped. Restarting instance." %(green_instances[line_number])
+        log(vypis)
     time.sleep(5) # delay script for 5 seconds
 
     # start instance
     if (instance_color == "blue"):
         os.system(start_blue_instances[line_number])
         print("%s is starting again. \n" %(blue_instances[line_number]))
+        vypis = "%s is starting again. \n" %(blue_instances[line_number])
+        log(vypis)
     else: 
         os.system(start_green_instances[line_number])
         print("%s is starting again. \n" %(green_instances[line_number]))
+        vypis = "%s is starting again. \n" %(green_instances[line_number])
+        log(vypis)
 
 # restart only one instance from the input and check instance
 def restart_instance(instance_color, line_number):
@@ -288,10 +295,13 @@ def restart_instance(instance_color, line_number):
     # successfully deployed instance
     if check_state == "deployed":
         if (instance_color == "blue"):
-            print("\n %s is successfully deployed." %(blue_instances[line_number]))  
+            print("\n %s is successfully deployed." %(blue_instances[line_number]))
+            vypis = "\n %s is successfully deployed." %(blue_instances[line_number])
+            log(vypis)  
         else:
             print("\n %s is successfully deployed." %(green_instances[line_number]))      
-
+            vypis = "\n %s is successfully deployed." %(green_instances[line_number])
+            log(vypis) 
 # check deploying of restarted instance
 def check_instance_after_restart(instance_color, line_number, timer): 
     # delete old state files   
@@ -319,8 +329,12 @@ def check_instance_after_restart(instance_color, line_number, timer):
     if contentFailed == 1:
         if (instance_color == "blue"):
             print("\n %s is .failed." %(blue_instances[line_number]))
+            vypis = "\n %s is .failed." %(blue_instances[line_number])
+            log(vypis)
         else: 
             print("\n %s is .failed." %(green_instances[line_number]))
+            vypis = "\n %s is .failed." %(green_instances[line_number])
+            log(vypis)
         return "restart"
 
     # check if instance is .deployed
@@ -351,6 +365,8 @@ def orig():
     os.system(restart_apaches_287)
 
     print("Original configuration files are on. Apaches were restarted.")
+    vypis = "Original configuration files are on. Apaches were restarted."
+    log(vypis)
 
 # blue green restart 
 def blue_green_restart(instance_color):
@@ -359,12 +375,16 @@ def blue_green_restart(instance_color):
     store_pids_to_file(instance_color)
 
     print("Stopping all %s instances." %instance_color)
+    vypis = "Stopping all %s instances." %instance_color
+    log(vypis)
     for line_number in range(0, 11):
         stop_one_instance(line_number)
 
     time.sleep(5) # delay script for 5 seconds
 
     print("Starting all %s instances." %instance_color)
+    vypis = "Starting all %s instances." %instance_color
+    log(vypis)
     if (instance_color == "blue"):
         for cmnd in start_blue_instances: 
             os.system(cmnd)
@@ -411,8 +431,12 @@ def blue_green_restart(instance_color):
             if failed == 1:
                 if (instance_color == "blue"):
                     print("\n %s is failed." %(blue_instances[line_failed_counter]))
+                    vypis = "\n %s is failed." %(blue_instances[line_failed_counter])
+                    log(vypis)
                 else:
                     print("\n %s is failed." %(green_instances[line_failed_counter]))
+                    vypis = "\n %s is failed." %(green_instances[line_failed_counter])
+                    log(vypis)
                 timer = 0
                 restart_instance_without_check(instance_color, line_failed_counter)
 
@@ -422,8 +446,12 @@ def blue_green_restart(instance_color):
             line_deployed_counter += 1
             if (instance_color == "blue"):
                 print("%s is %s." %(blue_instances[line_deployed_counter], deployed_message[deployed]))
+                vypis = "%s is %s." %(blue_instances[line_deployed_counter], deployed_message[deployed])
+                log(vypis)
             else:
                 print("%s is %s." %(green_instances[line_deployed_counter], deployed_message[deployed]))
+                vypis = "%s is %s." %(green_instances[line_deployed_counter], deployed_message[deployed])
+                log(vypis)
             if deployed == 1:			
                 counter_deployed =+ 1
             else:
@@ -431,12 +459,18 @@ def blue_green_restart(instance_color):
                 if timer == 47:
                     if (instance_color == "blue"):
                         print("\n %s is stuck. Restarting instance." %(blue_instances[line_deployed_counter]))
+                        vypis = "\n %s is stuck. Restarting instance." %(blue_instances[line_deployed_counter])
+                        log(vypis)
                     else:
                         print("\n %s is stuck. Restarting instance." %(green_instances[line_deployed_counter]))
+                        vypis = "\n %s is stuck. Restarting instance." %(green_instances[line_deployed_counter])
+                        log(vypis)
                     timer = 0
                     restart_instance_without_check(instance_color, line_deployed_counter) 	
 
     print("All %s instances are restarted successfully. \n" %instance_color)
+    vypis = "All %s instances are restarted successfully. \n" %instance_color
+    log(vypis)
 
 # blue green no restart 
 def blue_green_no_restart(instance_color):
@@ -451,6 +485,8 @@ def blue_green_no_restart(instance_color):
         os.system(restart_apaches_287)
 
         print("Blue configuration files are on. Apaches were restarted.")
+        vypis = "Blue configuration files are on. Apaches were restarted."
+        log(vypis)
     else:
         for cmnd in copy_green_conf_332:
             os.system(cmnd) 
@@ -461,6 +497,8 @@ def blue_green_no_restart(instance_color):
         os.system(restart_apaches_287)
 
         print("Green configuration files are on. Apaches were restarted.")
+        vypis = "Green configuration files are on. Apaches were restarted."
+        log(vypis)
 
 # Main method
 def main():
@@ -475,16 +513,28 @@ def main():
     restart_option = input("Your option: ")
 
     if (restart_option == "1"):
+        vypis = "Starting full app restart."
+        log(vypis)
         full()
     elif (restart_option == "2"):
+        vypis = "Starting Original apache profile + app restart."
+        log(vypis)
         orig()
     elif (restart_option == "3"):
+        vypis = "Starting Blue apache profile + app restart."
+        log(vypis)
         blue_green_restart("blue")
     elif (restart_option == "4"):
+        vypis = "Starting Green apache profile + app restart."
+        log(vypis)
         blue_green_restart("green")
     elif (restart_option == "5"):
+        vypis = "Starting Blue apache profile without app restart."
+        log(vypis)
         blue_green_no_restart("blue")
     elif (restart_option == "6"):
+        vypis = "Starting Green apache profile without app restart."
+        log(vypis)
         blue_green_no_restart("green")
     elif (restart_option == "7"):
         print("\n Please, choose one of options: ")
@@ -507,7 +557,7 @@ def main():
             print("10 - QDEF2K(tko4s2a6c0) - instance 11003")
             print("11 - QDEF2K(tko4s2a6c0) - instance 11004")
             instance_option = input("Your option: ")
-
+            
             if (instance_option == "0" or instance_option == "1" or instance_option == "2" or instance_option == "3"
             or instance_option == "4" or instance_option == "5" or instance_option == "6" or instance_option == "7" 
             or instance_option == "8" or instance_option == "9" or instance_option == "10" or instance_option == "11"):
@@ -545,6 +595,16 @@ def main():
     else:
         print("Wrong input, please try again. \n")
         main()
+
+# print log to logFile
+def log(vypis):
+    logFile = open("logFile.txt", "a")  # txt file for Logs
+    logFile.write("\n")
+    x = time.ctime()
+    logFile.write(x)
+    logFile.write(": ")
+    logFile.write(vypis)
+    logFile.close()
 
 # Start of the script
 main()
